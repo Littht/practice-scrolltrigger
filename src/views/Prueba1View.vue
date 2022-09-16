@@ -22,17 +22,20 @@
 <script>
 import gsap from 'gsap';
 import ScrollTrigger from "gsap/ScrollTrigger";
-gsap.registerPlugin(ScrollTrigger);
+import { onMounted } from '@vue/runtime-core'
 
-  export default{
+export default{
+  setup(){
+    onMounted(()=>{
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.defaults({ease:'none', duration: 2})
 
-    mounted(){
       gsap.to(
         '.b',
         {
           scrollTrigger:{
             trigger: '.b',
-            //markers:true,
+            markers:true,
             start:"-280px 50%",
             end:"470px 50%",
             toggleActions: 'play reverse play reverse'
@@ -48,7 +51,7 @@ gsap.registerPlugin(ScrollTrigger);
         {
           scrollTrigger: {
             trigger:'.c',
-            //markers:true,
+            markers:true,
             start:"-100px 50%",
             end:"400px 50%",
             toggleActions: 'play reverse play reverse'
@@ -64,7 +67,7 @@ gsap.registerPlugin(ScrollTrigger);
         {
           scrollTrigger: {
             trigger: '.d',
-            //markers:true,
+            markers:true,
             start: "-180px 50%",
             end: "360px 50%",
             scrub:1,
@@ -77,37 +80,36 @@ gsap.registerPlugin(ScrollTrigger);
 
       let tl = gsap.timeline({
         scrollTrigger:{
+          animation:tl,
           trigger:'.padre',
-          start: 'center center',
-          end:'bottom top',
-          //markers:true,
+          start: '100px 50%',
+          end:'0 50%',
+          markers:true,
           scrub:true,
           pin: true,
+          anticipatePin:1,
         }
       });
       tl.from(".c2",{xPercent:-100})
-      tl.from(".c3",{xPercent:100})
-      tl.from(".c4",{yPercent:-100})  
-    }
+        tl.from(".c3",{xPercent:100})
+        tl.from(".c4",{yPercent:-100})
+
+      scrollTrigger.create({
+        animation:tl,
+        trigger:'.padre',
+        start: 'top top',
+        end:'+= 4000',
+        scrub:true,
+        pin: true,
+        anticipatePin:1
+      })
+
+    })
   }
+}
 </script>
 
-<style>
-*{
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  color: #2c3e50;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-body{
-  background: #3d3d3d;
-}
-#app{
-  width:100%;
-  height: 400vh;
-}
-
+<style scoped>
 .box{
   width: 150px;
   height: 150px;
@@ -137,20 +139,12 @@ body{
   background-color: rgb(228, 82, 82);
 }
 
-.padre{
-  position:relative;
-  width:100%;
-  min-height:100vh;
-  overflow: hidden;
-}
-
 .container{
   width: 100%;
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
 }
 
 .container p{
